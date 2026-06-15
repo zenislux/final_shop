@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>찾기 결과</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center; }
+        .box { background: white; padding: 40px; border-radius: 8px; max-width: 450px; margin: 0 auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 4px; margin-top: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <% if (type === 'id' && foundUsername) { %>
+        <h2>아이디 찾기 결과</h2>
+        <p>회원님의 아이디는 다음과 같습니다.</p>
+        <h3 style="background: #f0f4f8; padding: 15px; border-radius: 4px; color: #2563eb;"><%= foundUsername %></h3>
+        <a href="/user/login" class="btn">로그인하러 가기</a>
+
+    <% } else if (type === 'pw' && verifiedUser) { %>
+        <h2>🔒 새 비밀번호 설정</h2>
+        <p>본인 확인이 완료되었습니다.<br>새로운 비밀번호를 입력해 주세요.</p>
+
+        <form action="/user/reset-pw" method="POST">
+            <input type="hidden" name="username" value="<%= verifiedUser %>">
+            <input type="password" name="newPassword" placeholder="새 비밀번호 입력" required>
+            <button type="submit" class="btn" style="background-color: #e53e3e; border: none; width: 100%; cursor: pointer;">비밀번호 변경하기</button>
+        </form>
+    <% } %>
+</div>
+
+</body>
+</html>

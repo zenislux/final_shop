@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 / 비밀번호 찾기</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; }
+        .container { background: white; padding: 30px; border-radius: 8px; max-width: 450px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .tab-menu { display: flex; margin-bottom: 20px; border-bottom: 2px solid #ccc; }
+        .tab-btn { flex: 1; padding: 10px; text-align: center; cursor: pointer; background: #eee; font-weight: bold; border: none; }
+        .tab-btn.active { background: #3b82f6; color: white; }
+        .find-section { display: none; }
+        .find-section.active { display: block; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+        button { width: 100%; background-color: #3b82f6; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .email-group { display: flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('id-find')">아이디 찾기</button>
+        <button class="tab-btn" onclick="switchTab('pw-find')">비밀번호 찾기</button>
+    </div>
+
+    <div id="id-find" class="find-section active">
+        <h3>아이디 찾기</h3>
+        <p style="font-size: 0.85em; color: #666;">가입할 때 입력한 이름과 이메일을 입력해 주세요.</p>
+        <form action="/user/find-id" method="POST">
+            <input type="text" name="name" placeholder="이름" required>
+            <div class="email-group">
+                <input type="text" name="email_local" placeholder="이메일 아이디" required>
+                <span>@</span>
+                <select name="email_domain" required>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="hanmail.net">hanmail.net</option>
+                    <option value="yahoo.com">yahoo.com</option>
+                </select>
+            </div>
+            <button type="submit">아이디 찾기</button>
+        </form>
+    </div>
+
+    <div id="pw-find" class="find-section">
+        <h3>비밀번호 변경하기</h3>
+        <p style="font-size: 0.85em; color: #666;">아이디, 이름, 가입 이메일을 모두 입력해 주세요.</p>
+        <form action="/user/find-pw" method="POST">
+            <input type="text" name="username" placeholder="아이디" required>
+            <input type="text" name="name" placeholder="이름" required>
+            <div class="email-group">
+                <input type="text" name="email_local" placeholder="이메일 아이디" required>
+                <span>@</span>
+                <select name="email_domain" required>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="hanmail.net">hanmail.net</option>
+                    <option value="yahoo.com">yahoo.com</option>
+                </select>
+            </div>
+            <button type="submit" style="background-color: #e53e3e;">본인 확인 및 비밀번호 변경</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 아이디 찾기 / 비밀번호 찾기 탭 전환 스크립트
+    function switchTab(tabId) {
+        document.querySelectorAll('.find-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title><%= product.name %> - 상세정보</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background-color: #f8fafc; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; gap: 40px; }
+        .product-img { width: 300px; height: 300px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
+        .product-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .price { font-size: 1.5em; color: #2563eb; font-weight: bold; margin: 15px 0; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
+        .btn-cart { background-color: #f59e0b; color: white; }
+        .btn-wish { background-color: #ec4899; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="./images/default.png" alt="<%= product.name %>" class="product-img">
+
+    <div class="product-info">
+        <div>
+            <h2><%= product.name %></h2>
+            <p class="price">₩<%= product.price.toLocaleString() %></p>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+            <p style="color: #475569; line-height: 1.6;"><%= product.description %></p>
+        </div>
+
+        <div class="btn-group">
+            <form action="cart/add" method="POST" style="flex: 1; display: flex;">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+                <button type="submit" class="btn btn-cart">🛒 장바구니 담기</button>
+            </form>
+
+            <a href="/wish/add/<%= product.id %>" class="btn btn-wish">❤️ 위시리스트</a>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="/" style="color: #64748b; text-decoration: none;">← 메인으로 돌아가기</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background-color: #f8fafc; color: #334155; }
+        .mypage-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2, h3, h4 { border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
+
+        /* 대시보드 스타일 */
+        .profile-box { background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .order-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .order-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+        .item-list { padding-left: 20px; margin-bottom: 15px; color: #475569; }
+
+        /* 배지 및 버튼 */
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: bold; }
+        .status-ready { background-color: #dbeafe; color: #2563eb; }
+        .status-cancel { background-color: #fee2e2; color: #ef4444; }
+        .btn-cancel { background-color: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .btn-cancel:hover { background-color: #fff5f5; border-color: #e53e3e; }
+
+        /* 기존 기능 폼 스타일링 */
+        .form-group { margin-bottom: 15px; }
+        .form-control { padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; width: 200px; }
+        .btn-blue { background-color: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-blue:hover { background-color: #2563eb; }
+        a { text-decoration: none; color: #2563eb; }
+    </style>
+</head>
+<body>
+
+<div class="mypage-container">
+    <h2>👤 마이페이지</h2>
+
+    <div class="profile-box">
+        <div>
+            <p style="margin: 0; font-size: 1.2em;">안녕하세요, <strong><%= user.name %></strong> 회원님!</p>
+            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 0.9em;">아이디: <%= user.username %> | 이메일: <%= user.email || '미등록' %></p>
+        </div>
+        <div style="text-align: right;">
+            <span style="font-size: 0.9em; color: #64748b;">보유 가상 포인트</span>
+            <p style="margin: 5px 0 0 0; font-size: 1.4em; font-weight: bold; color: #2563eb;">₩<%= user.point.toLocaleString() %>원</p>
+        </div>
+    </div>
+
+    <div style="background-color: #fffbeb; border: 1px solid #fef3c7; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <strong style="color: #d97706; font-size: 1.1em;">🪙 가상 포인트 충전소</strong>
+            <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #78350f;">최대 1,000,000원까지만 보유할 수 있습니다. (테스트용 가상 충전)</p>
+        </div>
+        <form action="/user/point/charge" method="POST" style="display: flex; gap: 10px; align-items: center; margin: 0;">
+            <input type="number" name="amount" placeholder="충전할 금액" min="1000" max="1000000" step="1000" required
+                   style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 130px; text-align: right;">
+            <span style="font-weight: bold; color: #475569;">원</span>
+            <button type="submit" style="background-color: #d97706; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s;"
+                    onmouseover="this.style.backgroundColor='#b45309'" onmouseout="this.style.backgroundColor='#d97706'">
+                충전하기
+            </button>
+        </form>
+    </div>
+
+    <h3>📦 나의 주문 / 배송 내역</h3>
+
+    <% if (orders.length === 0) { %>
+        <p style="text-align: center; padding: 30px 0; color: #94a3b8; font-style: italic;">아직 주문하신 내역이 없습니다.</p>
+    <% } else { %>
+        <% orders.forEach(order => { %>
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span style="color: #64748b;">주문번호 #<%= order.id %></span>
+                        <span style="margin-left: 15px; font-weight: normal; font-size: 0.9em; color: #94a3b8;"><%= order.created_at %></span>
+                    </div>
+                    <div>
+                        <span class="status-badge <%= order.status === '주문취소' ? 'status-cancel' : 'status-ready' %>">
+                            <%= order.status %>
+                        </span>
+                    </div>
+                </div>
+
+                <ul class="item-list">
+                    <% orderItems.filter(item => item.order_id === order.id).forEach(item => { %>
+                        <li><%= item.name %> × <%= item.quantity %>개 (<%= (item.price * item.quantity).toLocaleString() %>원)</li>
+                    <% }) %>
+                </ul>
+
+                <div style="font-size: 0.9em; background: #f8fafc; padding: 12px; border-radius: 6px; color: #475569; margin-bottom: 15px;">
+                    📍 <strong>수령인:</strong> <%= order.receiver_name %> |
+                    📞 <strong>연락처:</strong> <%= order.receiver_phone %><br>
+                    🏠 <strong>배송지 주소:</strong> <%= order.receiver_address %>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span>총 결제금액: </span>
+                        <strong style="color: #1e293b; font-size: 1.1em;">₩<%= order.total_price.toLocaleString() %>원</strong>
+                    </div>
+
+                    <% if (order.status === '결제완료') { %>
+                        <form action="/user/order/cancel" method="POST" onsubmit="return confirm('정말 이 주문을 취소하고 환불받으시겠습니까?');">
+                            <input type="hidden" name="orderId" value="<%= order.id %>">
+                            <input type="hidden" name="totalPrice" value="<%= order.total_price %>">
+                            <button type="submit" class="btn-cancel">주문 취소</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <h3 style="margin-top: 40px;">✏️ 회원 정보 수정</h3>
+    <form action="/user/edit-profile" method="post" style="margin-bottom: 30px;">
+        <div class="form-group">
+            <label style="font-weight: bold; margin-right: 10px;">이름 수정:</label>
+            <input type="text" name="name" value="<%= user.name %>" pattern="^[가-힣]+$" title="이름은 한글만 가능합니다." class="form-control" required>
+            <button type="submit" class="btn-blue" style="margin-left: 10px; padding: 6px 12px;">수정하기</button>
+        </div>
+    </form>
+
+    <div style="background-color: #fff5f5; padding: 20px; border: 1px solid #fed7d7; border-radius: 8px; margin-top: 40px;">
+        <h4 style="color: #c53030; margin-top: 0; border: none; padding: 0; margin-bottom: 10px;">정말 탈퇴하시겠습니까?</h4>
+        <p style="font-size: 0.9em; color: #742a2a; margin-bottom: 15px; margin-top: 0;">탈퇴 즉시 회원님의 모든 개인정보는 안전하게 파기되며 복구할 수 없습니다.</p>
+
+        <form action="/user/withdraw" method="post" onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+            <button type="submit" style="background-color: #e53e3e; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">회원 탈퇴하기</button>
+        </form>
+    </div>
+
+    <p style="margin-top: 30px; text-align: center;"><a href="/">← 쇼핑몰 홈으로 돌아가기</a></p>
+</div>
+
+</body>
+</html>

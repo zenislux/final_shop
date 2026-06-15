@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🧑‍💼 쇼핑몰 관리자 대시보드</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background-color: #f1f5f9; color: #1e293b; }
+        .admin-container { max-width: 1100px; margin: auto; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        h2 { border-bottom: 2px solid #cbd5e1; padding-bottom: 15px; margin-bottom: 25px; color: #0f172a; display: flex; justify-content: space-between; align-items: center; }
+
+        /* 테이블 스타일 */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 0.95em; }
+        th, td { padding: 14px 16px; border: 1px solid #e2e8f0; text-align: left; }
+        th { background-color: #f8fafc; font-weight: bold; color: #475569; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* 배송 상태 배지 */
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: bold; display: inline-block; }
+        .status-ready { background-color: #dbeafe; color: #2563eb; } /* 결제완료 */
+        .status-shipping { background-color: #fef3c7; color: #d97706; } /* 배송중 */
+        .status-done { background-color: #dcfce7; color: #16a34a; } /* 배송완료 */
+        .status-cancel { background-color: #fee2e2; color: #ef4444; } /* 주문취소 */
+
+        /* 셀렉트 박스 및 버튼 */
+        .select-status { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9em; background: #fff; cursor: pointer; }
+        .btn-update { background-color: #0f172a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85em; transition: background 0.2s; }
+        .btn-update:hover { background-color: #334155; }
+
+        .item-text { font-size: 0.9em; color: #475569; list-style: square; padding-left: 20px; margin: 0; }
+        a { text-decoration: none; color: #2563eb; font-size: 0.95em; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h2>
+        <span>🧑‍💼 쇼핑몰 관리자 마스터 대시보드</span>
+        <a href="/" style="font-weight: normal; font-size: 0.6em;">🏠 일반 홈 화면으로 가기</a>
+    </h2>
+
+    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #0f172a;">
+        💡 <strong>관리자 기능 가이드:</strong> 일반 유저들이 결제한 모든 주문 건을 실시간 모니터링합니다. 배송 상태를 [배송중], [배송완료]로 변경할 수 있으며, 주문이 취소된 건은 자동으로 수정이 비활성화됩니다.
+    </div>
+
+    <h3>📦 들어온 전체 주문 목록</h3>
+
+    <% if (orders.length === 0) { %>
+        <p style="text-align: center; padding: 5px 0; color: #64748b; font-style: italic;">현재 접수된 주문 내역이 없습니다.</p>
+    <% } else { %>
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 8%;">주문번호</th>
+                <th style="width: 10%;">주문자ID</th>
+                <th style="width: 25%;">주문 상품 / 수량</th>
+                <th style="width: 12%;">총 결제금액</th>
+                <th style="width: 25%;">배송지 정보</th>
+                <th style="width: 10%;">현재 상태</th>
+                <th style="width: 10%;">상태 변경</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% orders.forEach(order => { %>
+                <tr>
+                    <!-- 1. 주문 번호 및 날짜 -->
+                    <td>
+                        <strong>#<%= order.id %></strong>
+                    </td>
+
+                    <!-- 2. 주문자 아이디 -->
+                    <td><%= order.username %></td>
+
+                    <!-- 3. 상세 품목 루프 돌려 출력 -->
+                    <td>
+                        <ul class="item-text">
+                            <% orderItems.filter(item => item.order_id === order.id).forEach(item => { %>
+                                <li><%= item.name %> (<strong><%= item.quantity %>개</strong>)</li>
+                            <% }) %>
+                        </ul>
+                    </td>
+
+                    <!-- 4. 총 가격 -->
+                    <td><strong>₩<%= order.total_price.toLocaleString() %></strong></td>
+
+                    <!-- 5. 배송 정보 -->
+                    <td style="font-size: 0.9em; line-height: 1.4;">
+                        👤 수령인: <%= order.receiver_name %><br>
+                        📞 연락처: <%= order.receiver_phone %><br>
+                        🏠 주소: <%= order.receiver_address %>
+                    </td>
+
+                    <!-- 6. 현재 상태 배지 분기 처리 -->
+                    <td>
+                        <%
+                            let badgeClass = 'status-ready';
+                            if(order.status === '배송중') badgeClass = 'status-shipping';
+                            if(order.status === '배송완료') badgeClass = 'status-done';
+                            if(order.status === '주문취소') badgeClass = 'status-cancel';
+                        %>
+                        <span class="status-badge <%= badgeClass %>"><%= order.status %></span>
+                    </td>
+
+                    <!-- 7. 상태 변경 버튼 -->
+                    <td>
+                        <% if (order.status === '주문취소') { %>
+                            <span style="color: #94a3b8; font-size: 0.9em; font-style: italic;">변경불가</span>
+                        <% } else { %>
+                            <form action="/admin/order/status" method="POST" style="display: flex; flex-direction: column; gap: 5px;">
+                                <input type="hidden" name="orderId" value="<%= order.id %>">
+                                <select name="status" class="select-status">
+                                    <option value="결제완료" <%= order.status === '결제완료' ? 'selected' : '' %>>결제완료</option>
+                                    <option value="배송중" <%= order.status === '배송중' ? 'selected' : '' %>>배송중</option>
+                                    <option value="배송완료" <%= order.status === '배송완료' ? 'selected' : '' %>>배송완료</option>
+                                </select>
+                                <button type="submit" class="btn-update">적용</button>
+                            </form>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+</div>
+
+</body>
+</html>

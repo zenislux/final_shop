@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>상품목록</title>
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <style>
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      position: relative; /*추천 마크 배치를 위해 추가 */
+      background: white;
+    }
+    .product-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .info-bar {
+      margin: 15px 0;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .info-bar a {
+      margin-left: 10px;
+      font-size: 0.95em;
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    /*  스타일 추가 */
+    .featured-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ef4444;
+      color: white;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      font-weight: bold;
+    }
+    .cart-button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      font-weight: bold;
+    }
+    .cart-button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>📦 상품 목록</h1>
+  <nav>
+    <a href="./">홈</a>
+    <a href="products">상품목록</a>
+    <a href="cart">장바구니</a>
+    <a href="board">고객센터</a>
+  </nav>
+</header>
+
+<section class="info-bar">
+  <% if (user) { %>
+    <p><%= user.name %>님, 환영합니다!</p>
+  <% } else { %>
+    <p>🛑 로그인 후 장바구니를 사용할 수 있습니다.</p>
+  <% } %>
+</section>
+
+<section class="info-bar">
+  현재 등록된 상품 수: <%= allProducts.length %>개
+  <a href="products/all">전체 목록 보기</a>
+</section>
+
+<section>
+  <h2>🍓 오늘의 과일 추천</h2>
+  <div class="product-grid">
+    <% featuredProducts.forEach(product => { %>
+      <div class="product-card">
+
+        <% if (product.is_featured === 1) { %>
+          <span class="featured-badge">추천★</span>
+        <% } %>
+
+          <img src="<%= product.image %>" alt="<%= product.name %>">
+
+        <h3><%= product.emoji %> <%= product.name %></h3>
+        <p style="color: #64748b; font-size: 0.85em; min-height: 38px;"><%= product.description %></p>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+          <strong style="color: #2563eb; font-size: 1.1em;">₩<%= product.price.toLocaleString() %></strong>
+          <span style="font-size: 0.85em; color: #64748b;">❤️ <%= product.likes || 0 %></span>
+        </div>
+
+        <form action="cart/add" method="POST">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <button type="submit" class="cart-button">🛒 장바구니 담기</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 쇼핑몰 예시. All rights reserved.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /*  틀린 글자를 입력했을 때만 빨갛게 변함 */
+        input:not(:placeholder-shown):invalid {
+            border: 2px solid #ff4d4d;
+            background-color: #fff5f5;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #e53e3e;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* 틀렸을 때 경고 문구 표시 */
+        input:not(:placeholder-shown):invalid + .help-text {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<a href="/" style="display:inline-block; margin-bottom:10px; color:#2563eb; text-decoration:underline;">🏠 메인으로 돌아가기</a>
+
+<h2>회원가입</h2>
+<form action="/user/register" method="post">
+    <input type="text" name="username" placeholder="아이디" required><br>
+
+    <input type="text" name="name" placeholder="이름 (한글만 입력)" pattern="^[가-힣]+$" title="이름은 공백 없이 한글만 입력해야 합니다." required>
+    <span class="help-text">⚠️ 이름은 공백 없이 한글만 입력 가능합니다.</span><br>
+
+    <div style="margin-bottom: 15px;">
+        <label style="font-weight: bold;">이메일 (선택)</label><br>
+        <div style="display: flex; align-items: center; gap: 5px; margin-top: 8px;">
+            <input type="text" name="email_local" placeholder="이메일 아이디"
+                   pattern="^[a-zA-Z0-9._%+-]+$" title="올바른 이메일 형식이 아닙니다."
+                   style="width: 45%; margin: 0; padding: 10px;">
+
+            <span>@</span>
+
+            <select name="email_domain" style="width: 45%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">선택 안 함</option>
+                <option value="gmail.com">gmail.com</option>
+                <option value="naver.com">naver.com</option>
+                <option value="hanmail.net">hanmail.net</option>
+                <option value="yahoo.com">yahoo.com</option>
+            </select>
+        </div>
+        <span style="font-size: 0.8em; color: #718096; display: block; margin-top: 5px;">
+        ※ 이메일을 입력하지 않으시면 향후 <strong>아이디/비밀번호 찾기</strong> 서비스를 이용하실 수 없습니다.
+    </span>
+    </div>
+
+    <input type="password" name="password" placeholder="비밀번호" required><br>
+
+    <button type="submit">가입하기</button>
+</form>
+
+</body>
+</html>

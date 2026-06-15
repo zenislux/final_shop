@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <style>
+    .featured-slide {
+      display: none;
+      justify-content: center;
+      gap: 20px;
+      flex-direction: row;
+    }
+    .featured-slide.active {
+      display: flex;
+    }
+  </style>
+
+  <!-- 가로로 2개씩 3초 간격으로 추천 목록 보이기 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const slides = document.querySelectorAll('.featured-slide');
+      let current = 0;
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (i === index) {
+            slide.classList.add('active');
+          }
+        });
+      }
+
+      showSlide(current); // 최초 1번 보여주기
+
+      setInterval(() => {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }, 3000);
+    });
+  </script>
+
+  <!-- 배너 밑에 아래 내용을 3초 단위로 보이기 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const phrases = [
+        "🍓 오늘의 신선한 과일을 만나보세요!",
+        "🍌 인기 많은 과일을 지금 확인해보세요!",
+        "🍊 달콤한 오렌지, 무료배송 중!",
+        "🍇 포도로 건강 챙기세요!",
+        "🥝 한정 수량 특가! 지금 주문하면 내일 도착! 신선함을 빠르게!",
+        "🍍 과일 한입에 기분까지 상큼해져요!"
+      ];
+
+      const bannerText = document.getElementById("banner-text");
+      let current = 0;
+
+      setInterval(() => {
+        current = (current + 1) % phrases.length;
+        bannerText.textContent = phrases[current];
+      }, 3000); // 3초 간격
+    });
+  </script>
+
+</head>
+<body>
+<!-- index.ejs 상단에 추가 로그인/회원가입  -->
+<header style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px 30px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+    <% if (user) { %>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 0.95em; color: #334155;">
+                안녕하세요, <strong style="color: #1e3a8a;"><%= user.name %></strong> 회원님!
+                (🪙 잔여 포인트: <span style="color: #2563eb; font-weight: bold;"><%= user.point.toLocaleString() %>원</span>)
+            </span>
+            <a href="/user/mypage" style="display: inline-block; padding: 8px 16px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 0.9em; font-weight: 500; transition: background 0.2s;">마이페이지</a>
+            <a href="/user/logout" style="display: inline-block; padding: 8px 16px; background-color: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 0.9em; font-weight: 500; transition: background 0.2s;">로그아웃</a>
+        </div>
+    <% } else { %>
+        <div style="display: flex; gap: 10px;">
+            <a href="/user/login" style="text-decoration: none; color: #475569; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9em; font-weight: 500; background-color: white; transition: all 0.2s;"
+               onmouseover="this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor='white'">
+                로그인
+            </a>
+            <a href="/user/terms" style="text-decoration: none; color: white; padding: 8px 16px; background-color: #3b82f6; border-radius: 6px; font-size: 0.9em; font-weight: bold; transition: all 0.2s;"
+               onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'">
+                회원가입
+            </a>
+        </div>
+    <% } %>
+</header>
+<hr>
+
+<header>
+  <h1>🛍️ <%= title %></h1>
+  <nav>
+    <a href="/">홈</a>
+    <a href="products">상품목록</a>
+    <a href="/cart">장바구니</a>
+    <a href="/board">고객센터</a> <!-- ✅ 추가 -->
+  </nav>
+</header>
+
+<section >
+    <div class="banner" style="text-align: left;">
+<!--        <img src="<%= featuredProducts[0]?.image || '/images/default.png' %>"
+             alt="<%= featuredProducts[0]?.name || '추천 과일' %>"
+             style="width:100%; border-radius:10px;">
+-->        <img src="./images/default.png"
+             alt="추천 과일"
+             style="width:10%; border-radius:10px;">
+           <div id="banner-text"
+                style="margin-top: 15px; font-size: 1.2em; color: #333;">
+               🍓 오늘의 신선한 과일을 만나보세요!
+           </div>
+
+    </div>
+</section>
+    <div>
+        <h2 style="text-align: center;margin-top:30px; font-size:1.3em;">
+            🍇 오늘의 추천 과일 만나보세요 🍊
+        </h2>
+
+    </div>
+
+<section>
+    <div style="margin-top:60px; text-align:center; ">
+        <a href="products" class="shop-now-btn">바로 쇼핑하기 →</a>
+    </div>
+</section>
+
+<main>
+  <h2 style="text-align: center; font-size: 1.5em; margin-top: 20px;">🔥 인기 상품</h2>
+
+    <!-- 🔧 3. 2개 상품을 3초 간격으로 슬라이드로 표시 -->
+    <div id="featured-container">
+      <% for (let i = 0; i < featuredProducts.length; i += 2) { %>
+        <div class="featured-slide <%= i === 0 ? 'active' : '' %>">
+          <% for (let j = i; j < i + 2 && j < featuredProducts.length; j++) { %>
+            <div class="product-card">
+          <!--    <img src="<%= featuredProducts[j].image %>" alt="<%= featuredProducts[j].name %>"> -->
+              <img src="./images/<%= featuredProducts[j].image || 'default.png' %>"
+                   alt="<%= featuredProducts[j].name %>"
+                   style="width: 120px; height: 120px; object-fit: cover;">
+                <h3><a href="/product/<%= featuredProducts[j].id %>" style="text-decoration: none; color: #1e293b; transition: color 0.2s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#1e293b'">
+                        <%= featuredProducts[j].emoji %> <%= featuredProducts[j].name %>
+                    </a></h3>
+              <p><%= featuredProducts[j].description %></p>
+              <strong>₩<%= featuredProducts[j].price.toLocaleString() %></strong>
+
+              <form action="cart/add" method="POST">
+                <input type="hidden" name="productId" value="<%= featuredProducts[j].id %>">
+                <button type="submit" class="cart-button">🛒 장바구니 담기</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 웹프로그래밍 학기말과제용 쇼핑몰. All rights reserved.</p>
+</footer>
+</body>
+</html>
