@@ -51,7 +51,7 @@
 <body>
   <header>
     <h1>🧾 전체 상품 목록</h1>
-    <p><a href="products" class="back-link">← 오늘의 추천으로 돌아가기</a></p>
+    <a href="../products" class="back-link">← 오늘의 추천으로 돌아가기</a>
   </header>
 
   <main>
@@ -59,7 +59,7 @@
       <% products.forEach(p => { %>
         <div class="product-card">
 
-          <img src="./images/<%= p.image || 'default.jpg' %>" alt="<%= p.name %>">
+          <img src="../<%= p.image || 'images/default.png' %>" alt="<%= p.name %>">
 
           <h3><%= p.emoji %> <%= p.name %>
             <% if (p.is_featured === 1) { %>
@@ -80,7 +80,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 쇼핑몰 예시. All rights reserved.</p>
+    <p>&copy; 2026 쇼핑몰 예시. All rights reserved.</p>
   </footer>
 </body>
 </html>

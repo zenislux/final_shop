@@ -95,8 +95,8 @@
   <nav>
     <a href="/">홈</a>
     <a href="products">상품목록</a>
-    <a href="/cart">장바구니</a>
-    <a href="/board">고객센터</a> <!-- ✅ 추가 -->
+    <a href="cart">장바구니</a>
+    <a href="board">고객센터</a> <!-- ✅ 추가 -->
   </nav>
 </header>
 
@@ -138,9 +138,9 @@
           <% for (let j = i; j < i + 2 && j < featuredProducts.length; j++) { %>
             <div class="product-card">
           <!--    <img src="<%= featuredProducts[j].image %>" alt="<%= featuredProducts[j].name %>"> -->
-              <img src="./images/<%= featuredProducts[j].image || 'default.png' %>"
-                   alt="<%= featuredProducts[j].name %>"
-                   style="width: 120px; height: 120px; object-fit: cover;">
+                <img src="<%= featuredProducts[j].image || 'images/default.png' %>"
+                     alt="<%= featuredProducts[j].name %>"
+                     style="width: 120px; height: 120px; object-fit: cover;">
                 <h3><a href="/product/<%= featuredProducts[j].id %>" style="text-decoration: none; color: #1e293b; transition: color 0.2s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#1e293b'">
                         <%= featuredProducts[j].emoji %> <%= featuredProducts[j].name %>
                     </a></h3>
@@ -160,7 +160,7 @@
 </main>
 
 <footer>
-  <p>&copy; 2026 웹프로그래밍 학기말과제용 쇼핑몰. All rights reserved.</p>
+  <p>&copy; 2026 웹프로그래밍 학기말과제용 쇼핑몰. 202145829 조준희 All rights reserved.</p>
 </footer>
 </body>
 </html>
